@@ -1,11 +1,7 @@
 ---
-opendkim_dependency_packages: []
-# opendkim_repo_owner: owner_name
-# opendkim_repo_name: repo_name
+opendkim_packages:
+  - opendkim
+  - opendkim-tools
 
-# opendkim_apt_key_url: https://packages.repository.com/opendkim.gpg
-# opendkim_apt_key_dest: /usr/share/keyrings/opendkim.gpg
-
-opendkim_home: /opt/opendkim
 opendkim_user: opendkim
 opendkim_group: opendkim

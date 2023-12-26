@@ -1,13 +1,12 @@
 ---
 galaxy_info:
   role_name: opendkim
-  author: your name
-  description: your description
+  author: yoshiaki tanaka
+  description: setup OpenDKIM
   license: Apache
   min_ansible_version: "2.13"
   platforms:
     - name: Debian
       versions:
         - bookworm
-        - bullseye
 dependencies: []
