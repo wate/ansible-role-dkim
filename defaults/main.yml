@@ -1,11 +1,7 @@
 ---
 ## -----------------
-## インストールするバージョン
-## -----------------
-opendkim_version: latest
-
-## -----------------
 ## インストールするパッケージ
 ## -----------------
-opendkim_packages: []
-
+opendkim_packages:
+  - opendkim
+  - opendkim-tools

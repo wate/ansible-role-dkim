@@ -1,17 +1,21 @@
 # code: language=ansible
 ---
-- name: Find platform task file
-  ansible.builtin.set_fact:
-    include_task_file: "{{ lookup('first_found', params, errors='ignore') }}"
-  vars:
-    params:
-      files:
-        - "{{ ansible_facts.os_family }}/{{ ansible_facts.distribution }}/{{ ansible_facts.distribution_major_version }}.yml"
-        - "{{ ansible_facts.os_family }}/{{ ansible_facts.distribution }}.yml"
-        - "{{ ansible_facts.os_family }}.yml"
-      paths:
-        - tasks/dependency
-- name: Dependency task
-  ansible.builtin.include_tasks:
-    file: "{{ include_task_file }}"
-  when: include_task_file | length > 0
+- name: Install opendkim dependency packages
+  ansible.builtin.apt:
+    name: "{{ opendkim_dependency_packages | default([]) }}"
+- name: Add opendkim group
+  ansible.builtin.group:
+    name: "{{ opendkim_group }}"
+    system: true
+- name: Add opendkim user
+  ansible.builtin.user:
+    name: "{{ opendkim_user }}"
+    group: "{{ opendkim_group }}"
+    system: true
+- name: Create install directory
+  ansible.builtin.file:
+    path: "{{ opendkim_home }}"
+    owner: "{{ opendkim_user }}"
+    group: "{{ opendkim_group }}"
+    state: directory
+    mode: "0755"

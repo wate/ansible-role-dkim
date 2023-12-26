@@ -15,11 +15,6 @@
   ansible.builtin.include_vars:
     file: "{{ variable_file }}"
   when: variable_file | length > 0
-- name: Import repository task
-  ansible.builtin.import_tasks:
-    file: repository.yml
-  tags:
-    - role_opendkim_repository
 - name: Import dependency task
   ansible.builtin.import_tasks:
     file: dependency.yml

@@ -1,7 +1,4 @@
 ---
-opendkim_packages:
-  - opendkim
-  - opendkim-tools
-
+opendkim_dependency_packages: []
 opendkim_user: opendkim
 opendkim_group: opendkim
