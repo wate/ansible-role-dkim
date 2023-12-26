@@ -1,0 +1,16 @@
+[Unit]
+Description=Sample
+# Requires=network.service
+# After=network.target
+
+[Service]
+Type=simple
+# EnvironmentFile=/etc/default/sample
+# Environment=VAR_NAME=VAR_VALUE
+WorkingDirectory={{ opendkim_home }}
+User={{ opendkim_user }}
+Group={{ opendkim_group }}
+ExecStart={{ opendkim_home }}/bin/execute
+
+[Install]
+WantedBy=multi-user.target

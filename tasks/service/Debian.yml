@@ -1,0 +1,17 @@
+# code: language=ansible
+---
+- name: Create/update systemd unit file
+  ansible.builtin.template:
+    src: opendkim.service.j2
+    dest: /lib/systemd/system/opendkim.service
+    mode: "0644"
+  notify: restart opendkim
+- name: Service opendkim is active and enabled on system startup
+  ansible.builtin.systemd:
+    name: opendkim
+    state: started
+    enabled: true
+# - name: allow opendkim port
+#   community.general.ufw:
+#     rule: allow
+#     port: "123456"

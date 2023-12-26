@@ -1,0 +1,16 @@
+---
+# code: language=ansible
+# - name: Create/update setting file
+#   ansible.builtin.template:
+#     src: opendkim.conf.j2
+#     dest: /erc/opendkim/opendkim.conf
+#     mode: "0644"
+# - name: Add/update option setting
+#   ansible.builtin.lineinfile:
+#     path: /etc/opendkim/opendkim.conf
+#     regexp: ^(#\\s+)?option_name=
+#     line: option_name=option_value
+# - name: Add/update custom setting
+#   ansible.builtin.blockinfile:
+#     path: /etc/opendkim/opendkim.conf
+#     block: "{{ opendkim_extra_cfg | default('') }}"
