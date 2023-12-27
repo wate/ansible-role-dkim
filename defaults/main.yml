@@ -5,3 +5,8 @@
 opendkim_packages:
   - opendkim
   - opendkim-tools
+
+## -----------------
+## 設定するドメイン
+## -----------------
+opedkim_domains: []

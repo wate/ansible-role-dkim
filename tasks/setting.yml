@@ -1,16 +1,26 @@
 # code: language=ansible
 ---
-# - name: Create/update setting file
+- name: OpenDKIM key directories
+  ansible.builtin.file:
+    path: "{{ opedkim_key_dir }}"
+    state: directory
+    owner: "{{ opendkim_user }}"
+    group: "{{ opendkim_group }}"
+    mode: "0700"
+
+# - name: Create OpenDKIM setting files
 #   ansible.builtin.template:
-#     src: opendkim.conf.j2
-#     dest: /erc/opendkim/opendkim.conf
+#     src: "{{ item }}.j2"
+#     dest: "{{ opendkim_config_dir }}/{{ item }}"
 #     mode: "0644"
-# - name: Add/update option setting
-#   ansible.builtin.lineinfile:
-#     path: /etc/opendkim/opendkim.conf
-#     regexp: ^(#\\s+)?option_name=
-#     line: option_name=option_value
-# - name: Add/update custom setting
-#   ansible.builtin.blockinfile:
-#     path: /etc/opendkim/opendkim.conf
-#     block: "{{ opendkim_extra_cfg | default('') }}"
+#   loop:
+#     - TrustedHosts
+#     - KeyTable
+#     - SigningTable
+#   notify: Restart opendkim
+# - name: Generate OpenDKIM keys
+#   ansible.builtin.include_tasks:
+#     file: domain_key.yml
+#   loop: "{{ opedkim_domains | default([]) }}"
+#   loop_control:
+#     loop_var: opedkim_domain

@@ -1,8 +1,5 @@
 # code: language=ansible
 ---
-- name: Install opendkim dependency packages
-  ansible.builtin.apt:
-    name: "{{ opendkim_dependency_packages | default([]) }}"
 - name: Add opendkim group
   ansible.builtin.group:
     name: "{{ opendkim_group }}"
@@ -12,10 +9,3 @@
     name: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
     system: true
-- name: Create install directory
-  ansible.builtin.file:
-    path: "{{ opendkim_home }}"
-    owner: "{{ opendkim_user }}"
-    group: "{{ opendkim_group }}"
-    state: directory
-    mode: "0755"
