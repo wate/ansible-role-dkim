@@ -1,31 +1,31 @@
 ---
 - name: Debug
   ansible.builtin.debug:
-    var: opedkim_domain
+    var: opendkim_domain
 - name: Creates domain's keys directory
   ansible.builtin.file:
-    path: "{{ opedkim_key_dir }}/{{ opedkim_domain }}"
+    path: "{{ opendkim_key_dir }}/{{ opendkim_domain }}"
     state: directory
     owner: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
     mode: "0700"
 - name: Ensure signing key is present
   ansible.builtin.stat:
-    path: "{{ opedkim_key_dir }}/{{ opedkim_domain }}/{{ opendkim_selector }}.private"
+    path: "{{ opendkim_key_dir }}/{{ opendkim_domain }}/{{ opendkim_selector }}.private"
   register: opendkim_key
 - name: Generate signing key
   ansible.builtin.command:
     cmd: >
       opendkim-genkey
-      -b {{ dkim_rsa_keylen }}
-      -d {{ dkim_domain }}
-      -s {{ dkim_selector }}
-      -D {{ opedkim_key_dir }}/{{ opedkim_domain }}
+      -b {{ opendkim_rsa_keylen }}
+      -d {{ opendkim_domain }}
+      -s {{ opendkim_selector }}
+      -D {{ opendkim_key_dir }}/{{ opendkim_domain }}
   when: not opendkim_key.stat.exists
   notify: Restart opendkim
 - name: Ensure signing key owner
   ansible.builtin.file:
-    path: "{{ opedkim_key_dir }}/{{ opedkim_domain }}/{{ opendkim_selector }}.private"
+    path: "{{ opendkim_key_dir }}/{{ opendkim_domain }}/{{ opendkim_selector }}.private"
     owner: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
     mode: "0644"

@@ -6,44 +6,43 @@ opendkim_packages:
   - opendkim
   - opendkim-tools
 
-### DKIM  configuration variables
-## セレクラー
-opendkim_selector: email
+## DKIMセレクター
+opendkim_selector: mail
 
 ## -----------------
 ## opendkim-gkeygenで鍵を生成する時のキー長
 ## -----------------
 opendkim_rsa_keylen: 2048
 
-opedkim_cfg:
-  # Syslog: yes
-  # SyslogSuccess: yes
-  ## LogWhy: no
-  Mode: sv
-  ## SubDomains: no
+## -----------------
+## OpenDKIMのSocketの設定値
+## -----------------
+opendkim_socket: local:/run/opendkim/opendkim.sock
+
+## -----------------
+## OpenDKIMの設定
+## -----------------
+opendkim_cfg:
+  # Syslog: "yes"
+  # SyslogSuccess: "yes"
+  LogWhy: "yes"
+  ## Canonicalization: relaxed/relaxed
+  ## Mode: sv
+  ## SubDomains: "no"
   # OversignHeaders: From
   ## Domain: example.com
   ## Selector: "{{ opendkim_selector }}"
-  ## KeyFile: "{{ opedkim_key_dir }}/example.com/{{ opendkim_selector }}.private"
+  ## KeyFile: "{{ opendkim_key_dir }}/example.com/{{ opendkim_selector }}.private"
   # UserID: "{{ opendkim_user }}"
   # UMask: "007"
-  Canonicalization: relaxed/relaxed
-  # Socket: local:/run/opendkim/opendkim.sock
+  Socket: "{{ opendkim_socket }}"
   # PidFile: /run/opendkim/opendkim.pid
-  # InternalHosts:
-  #   - 192.168.0.0/16
-  #   - 10.0.0.0/8
-  #   - 172.16.0.0/12
   # TrustAnchorFile: /usr/share/dns/root.key
-  ## Nameservers: 127.0.0.1
-
-## Select your MTA (postfix or sendmail)
-dkim_mta: postfix
-
-dkim_postfix_config: /etc/postfix/main.cf
 
 ## -----------------
 ## 設定するドメイン
+## ※この値が設定されている(ドメインが1つ以上設定されている)場合、
+## KeyTable/SigningTableの設定が設定ファイルに自動で追加されます
 ## -----------------
 opendkim_domains: []
 #   - example.com
@@ -52,6 +51,8 @@ opendkim_domains: []
 
 ## -----------------
 ## 接続を許可するホストの設定
+## ※この値が設定されている(1つ以上設定されている)場合、
+## InternalHosts/ExternalIgnoreListの設定が設定ファイルに自動で追加されます
 ## -----------------
 opendkim_trusted_hosts: []
 #   - 192.168.0.0/16
@@ -62,3 +63,21 @@ opendkim_trusted_hosts: []
 ## 連携させるMTA
 ## -----------------
 opendkim_mta: postfix
+
+## -----------------
+## Postfixの設定ファイルのパス
+## -----------------
+opendkim_postfix_config: /etc/postfix/main.cf
+
+## -----------------
+## Postfixの連携設定
+## -----------------
+opendkim_postfix_cfg:
+  - key: milter_protocol
+    value: 6
+  - key: milter_default_action
+    value: accept
+  - key: smtpd_milters
+    value: inet:{{ opendkim_socket }}
+  - key: non_smtpd_milters
+    value: inet:{{ opendkim_socket }}

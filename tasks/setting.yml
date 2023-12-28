@@ -2,28 +2,55 @@
 ---
 - name: OpenDKIM config directory
   ansible.builtin.file:
-    path: "{{ opedkim_table_config_dir }}"
+    path: "{{ opendkim_table_config_dir }}"
     state: directory
     owner: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
     mode: "0755"
 - name: OpenDKIM key directories
   ansible.builtin.file:
-    path: "{{ opedkim_key_dir }}"
+    path: "{{ opendkim_key_dir }}"
     state: directory
     owner: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
     mode: "0700"
-- name: Update OpenDKIM setting files
-  ansible.builtin.template:
-    src: opendkim.conf.j2
-    dest: /etc/opendkim.conf
-    mode: "0644"
+- name: Set OpenDKIM socket configured
+  ansible.builtin.lineinfile:
+    path: /etc/default/opendkim
+    regexp: ^SOCKET=
+    line: SOCKET="{{ opendkim_socket }}"
+  notify: Restart opendkim
+- name: Update OpenDKIM settings
+  ansible.builtin.lineinfile:
+    path: /etc/opendkim.conf
+    regexp: ^{{ item.key }}\s+
+    line: "{{ '%-22s' | format(item.key) }} {{ item.value }}"
+  loop: "{{ opendkim_cfg | dict2items }}"
+  notify: Restart opendkim
+- name: Update InternalHosts/ExternalIgnoreList setting
+  ansible.builtin.blockinfile:
+    path: /etc/opendkim.conf
+    marker: "# {mark} opendkim_trusted_hosts ANSIBLE MANAGED BLOCK"
+    content: |
+      {% if opendkim_trusted_hosts | default([]) | length > 0 %}
+      ExternalIgnoreList      refile:{{ opendkim_table_config_dir }}/TrustedHosts
+      InternalHosts           refile:{{ opendkim_table_config_dir }}/TrustedHosts
+      {% endif -%}
+  notify: Restart opendkim
+- name: Update KeyTable/SigningTable setting
+  ansible.builtin.blockinfile:
+    path: /etc/opendkim.conf
+    marker: "# {mark} opendkim_domains ANSIBLE MANAGED BLOCK"
+    content: |
+      {% if opendkim_domains | default([]) | length > 0 -%}
+      KeyTable                refile:{{ opendkim_table_config_dir }}/KeyTable
+      SigningTable            refile:{{ opendkim_table_config_dir }}/SigningTable
+      {% endif %}
   notify: Restart opendkim
 - name: Create/Update OpenDKIM config table files
   ansible.builtin.template:
     src: "{{ item }}.j2"
-    dest: "{{ opedkim_table_config_dir }}/{{ item }}"
+    dest: "{{ opendkim_table_config_dir }}/{{ item }}"
     mode: "0644"
   loop:
     - KeyTable
@@ -32,9 +59,9 @@
 - name: Generate OpenDKIM keys
   ansible.builtin.include_tasks:
     file: domain_keys.yml
-  loop: "{{ opedkim_domains | default([]) }}"
+  loop: "{{ opendkim_domains | default([]) }}"
   loop_control:
-    loop_var: opedkim_domain
+    loop_var: opendkim_domain
 - name: MTA alignment setting
   ansible.builtin.include_tasks:
     file: mta/{{ opendkim_mta }}.yml

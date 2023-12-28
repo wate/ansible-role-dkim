@@ -1,0 +1,15 @@
+---
+- name: Install Postfix
+  ansible.builtin.apt:
+    name: postfix
+- name: Configuration OpenDKIM postfix milter
+  ansible.builtin.lineinfile:
+    path: "{{ opendkim_postfix_config }}"
+    regexp: ^{{ opendkim_postfix_setting.key }}\s*=
+    line: "{{ opendkim_postfix_setting.key }} = {{ opendkim_postfix_setting.value }}"
+    backup: true
+  loop: "{{ opendkim_postfix_cfg }}"
+  loop_control:
+    loop_var: opendkim_postfix_setting
+  # notify:
+  #   - opendkim - restart postfix
