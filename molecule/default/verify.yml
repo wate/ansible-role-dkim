@@ -6,37 +6,37 @@
   # check_mode: true
   become: true
   tasks:
-    - name: Example assertion
+    ## パッケージのテスト
+    - name: Gather the package facts
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Assert package
       ansible.builtin.assert:
-        that: true
-    # ## パッケージのテスト
-    # - name: Gather the package facts
-    #   ansible.builtin.package_facts:
-    #     manager: auto
-    # - name: Assert package
-    #   ansible.builtin.assert:
-    #     that:
-    #       - ansible_facts.packages['package'] is defined
-    # ## ユーザーのテスト
-    # - name: Check user
-    #   ansible.builtin.user:
-    #     name: www-data
-    #     system: true
-    #   register: result
-    # - name: Assert user
-    #   ansible.builtin.assert:
-    #     that:
-    #       - result is not changed
-    # ## グループのテスト
-    # - name: Check group
-    #   ansible.builtin.group:
-    #     name: www-data
-    #     system: true
-    #   register: result
-    # - name: Assert group
-    #   ansible.builtin.assert:
-    #     that:
-    #       - result is not changed
+        that:
+          - ansible_facts.packages['opendkim'] is defined
+          - ansible_facts.packages['opendkim-tools'] is defined
+    ## ユーザーのテスト
+    - name: Check user
+      ansible.builtin.user:
+        name: opendkim
+        system: true
+      register: user_check_result
+      check_mode: true
+    - name: Assert user
+      ansible.builtin.assert:
+        that:
+          - user_check_result is not changed
+    ## グループのテスト
+    - name: Check group
+      ansible.builtin.group:
+        name: www-data
+        system: true
+      check_mode: true
+      register: group_check_result
+    - name: Assert group
+      ansible.builtin.assert:
+        that:
+          - group_check_result is not changed
     # # ファイルのテスト
     # - name: Check virtualhost setting
     #   ansible.builtin.stat:
@@ -56,15 +56,15 @@
     #       - result.stat.exists
     #       - result.stat.islnk
     #       - result.stat.lnk_source == '/etc/nginx/sites-available/default'
-    # ## サービスのテスト
-    # - name: Populate service facts
-    #   ansible.builtin.service_facts:
-    # - name: Assert service
-    #   ansible.builtin.assert:
-    #     that:
-    #       - ansible_facts.services['package.service'] is defined
-    #       - ansible_facts.services['package.service']['state'] == 'running'
-    #       - ansible_facts.services['package.service']['status'] == 'enabled'
+    ## サービスのテスト
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+    - name: Assert service
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['opendkim.service'] is defined
+          - ansible_facts.services['opendkim.service']['state'] == 'running'
+          - ansible_facts.services['opendkim.service']['status'] == 'enabled'
     # ## 待受ポートのテスト
     # - name: Gather facts on listening ports
     #   community.general.listen_ports_facts:

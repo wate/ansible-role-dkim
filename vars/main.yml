@@ -3,5 +3,6 @@ opendkim_user: opendkim
 opendkim_group: opendkim
 
 opedkim_config_path: /etc/opendkim.conf
+opedkim_table_config_dir: /etc/opendkim
 
 opedkim_key_dir: /etc/dkimkeys

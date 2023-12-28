@@ -6,7 +6,55 @@ opendkim_packages:
   - opendkim
   - opendkim-tools
 
+### DKIM  configuration variables
+## セレクラー
+opendkim_selector: email
+
+## -----------------
+## opendkim-gkeygenで鍵を生成する時のキー長
+## -----------------
+opendkim_rsa_keylen: 2048
+
+opedkim_cfg:
+  # Syslog: yes
+  # SyslogSuccess: yes
+  ## LogWhy: no
+  ## Mode: sv
+  ## SubDomains: no
+  # OversignHeaders: From
+  # UserID: "{{ opendkim_user }}"
+  # UMask: "007"
+  # Socket: local:/run/opendkim/opendkim.sock
+  # PidFile: /run/opendkim/opendkim.pid
+  # InternalHosts:
+  #   - 192.168.0.0/16
+  #   - 10.0.0.0/8
+  #   - 172.16.0.0/12
+  # TrustAnchorFile: /usr/share/dns/root.key
+  KeyTable: refile:/etc/opendkim/KeyTable
+  SigningTable: refile:/etc/opendkim/SigningTable
+  ## Nameservers: 127.0.0.1
+
+# Domain			example.com
+# Selector		2020
+# KeyFile		/etc/dkimkeys/example.private
+
+## Select your MTA (postfix or sendmail)
+dkim_mta: postfix
+
+dkim_postfix_config: /etc/postfix/main.cf
+
 ## -----------------
 ## 設定するドメイン
 ## -----------------
 opedkim_domains: []
+#   - example.com
+#   - example.org
+#   - example.jp
+## -----------------
+## 接続を許可するホストの設定
+## -----------------
+opedkim_trusted_hosts: []
+  #   - 192.168.0.0/16
+  #   - 10.0.0.0/8
+  #   - 172.16.0.0/12

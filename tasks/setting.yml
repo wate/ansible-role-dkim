@@ -1,5 +1,12 @@
 # code: language=ansible
 ---
+- name: OpenDKIM config directory
+  ansible.builtin.file:
+    path: "{{ opedkim_table_config_dir }}"
+    state: directory
+    owner: "{{ opendkim_user }}"
+    group: "{{ opendkim_group }}"
+    mode: "0755"
 - name: OpenDKIM key directories
   ansible.builtin.file:
     path: "{{ opedkim_key_dir }}"
@@ -7,20 +14,24 @@
     owner: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
     mode: "0700"
-
-# - name: Create OpenDKIM setting files
-#   ansible.builtin.template:
-#     src: "{{ item }}.j2"
-#     dest: "{{ opendkim_config_dir }}/{{ item }}"
-#     mode: "0644"
-#   loop:
-#     - TrustedHosts
-#     - KeyTable
-#     - SigningTable
-#   notify: Restart opendkim
-# - name: Generate OpenDKIM keys
-#   ansible.builtin.include_tasks:
-#     file: domain_key.yml
-#   loop: "{{ opedkim_domains | default([]) }}"
-#   loop_control:
-#     loop_var: opedkim_domain
+- name: Update OpenDKIM setting files
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: /etc/{{ opedkim_table_config_dir }}/{{ item }}
+    mode: "0644"
+  notify: Restart opendkim
+- name: Create/Update OpenDKIM config table files
+  ansible.builtin.template:
+    src: opendkim.conf.j2
+    dest: /etc/opendkim.conf
+    mode: "0644"
+  loop:
+    - KeyTable
+    - SigningTable
+    - TrustedHosts
+- name: Generate OpenDKIM keys
+  ansible.builtin.include_tasks:
+    file: domain_keys.yml
+  loop: "{{ opedkim_domains | default([]) }}"
+  loop_control:
+    loop_var: opedkim_domain

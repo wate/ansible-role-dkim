@@ -1,4 +1,0 @@
----
-- name: Debug
-  ansible.builtin.debug:
-    var: opedkim_domain
