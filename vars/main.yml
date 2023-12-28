@@ -3,4 +3,4 @@ opendkim_user: opendkim
 opendkim_group: opendkim
 
 opendkim_table_config_dir: /etc/opendkim
-opendkim_key_dir: /etc/dkimkeys
+opendkim_key_dir: /etc/opendkim/keys

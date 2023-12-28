@@ -2,13 +2,19 @@
 - name: Install Postfix
   ansible.builtin.apt:
     name: postfix
+- name: OpenDKIM run directory
+  ansible.builtin.file:
+    path: "{{ opendkim_run_dir }}"
+    state: directory
+    owner: "{{ opendkim_user }}"
+    group: postfix
+    mode: "0755"
 - name: Configuration OpenDKIM postfix milter
-  ansible.builtin.lineinfile:
-    path: "{{ opendkim_postfix_config }}"
-    regexp: ^{{ opendkim_postfix_setting.key }}\s*=
-    line: "{{ opendkim_postfix_setting.key }} = {{ opendkim_postfix_setting.value }}"
-    backup: true
-  loop: "{{ opendkim_postfix_cfg }}"
-  loop_control:
-    loop_var: opendkim_postfix_setting
+  ansible.builtin.blockinfile:
+    path: /etc/postfix/main.cf
+    marker: "# {mark} opendkim ANSIBLE MANAGED BLOCK"
+    content: |
+      {% for opendkim_postfix_setting in opendkim_postfix_cfg -%}
+      {{ opendkim_postfix_setting.key }} = {{ opendkim_postfix_setting.value }}
+      {% endfor %}
   notify: Restart postfix

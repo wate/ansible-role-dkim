@@ -17,8 +17,8 @@
 - name: Set OpenDKIM socket configured
   ansible.builtin.lineinfile:
     path: /etc/default/opendkim
-    regexp: ^SOCKET=
-    line: SOCKET="{{ opendkim_socket }}"
+    regexp: ^RUNDIR=
+    line: RUNDIR="{{ opendkim_run_dir }}"
   notify: Restart opendkim
 - name: Update OpenDKIM settings
   ansible.builtin.lineinfile:
@@ -27,14 +27,6 @@
     line: "{{ '%-22s' | format(item.key) }} {{ item.value }}"
   loop: "{{ opendkim_cfg | dict2items }}"
   notify: Restart opendkim
-- name: Update InternalHosts/ExternalIgnoreList setting
-  ansible.builtin.blockinfile:
-    path: /etc/opendkim.conf
-    marker: "# {mark} opendkim_trusted_hosts ANSIBLE MANAGED BLOCK"
-    content: |
-      ExternalIgnoreList      refile:{{ opendkim_table_config_dir }}/TrustedHosts
-      InternalHosts           refile:{{ opendkim_table_config_dir }}/TrustedHosts
-  notify: Restart opendkim
 - name: Update KeyTable/SigningTable setting
   ansible.builtin.blockinfile:
     path: /etc/opendkim.conf
@@ -42,6 +34,14 @@
     content: |
       KeyTable                refile:{{ opendkim_table_config_dir }}/KeyTable
       SigningTable            refile:{{ opendkim_table_config_dir }}/SigningTable
+  notify: Restart opendkim
+- name: Update InternalHosts/ExternalIgnoreList setting
+  ansible.builtin.blockinfile:
+    path: /etc/opendkim.conf
+    marker: "# {mark} opendkim_trusted_hosts ANSIBLE MANAGED BLOCK"
+    content: |
+      ExternalIgnoreList      refile:{{ opendkim_table_config_dir }}/TrustedHosts
+      InternalHosts           refile:{{ opendkim_table_config_dir }}/TrustedHosts
   notify: Restart opendkim
 - name: Create/Update OpenDKIM config table files
   ansible.builtin.template:

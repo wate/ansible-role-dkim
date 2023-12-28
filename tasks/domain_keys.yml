@@ -28,4 +28,4 @@
     path: "{{ opendkim_key_dir }}/{{ opendkim_domain }}/{{ opendkim_selector }}.private"
     owner: "{{ opendkim_user }}"
     group: "{{ opendkim_group }}"
-    mode: "0644"
+    mode: "0600"
