@@ -19,11 +19,15 @@ opedkim_cfg:
   # Syslog: yes
   # SyslogSuccess: yes
   ## LogWhy: no
-  ## Mode: sv
+  Mode: sv
   ## SubDomains: no
   # OversignHeaders: From
+  ## Domain: example.com
+  ## Selector: "{{ opendkim_selector }}"
+  ## KeyFile: "{{ opedkim_key_dir }}/example.com/{{ opendkim_selector }}.private"
   # UserID: "{{ opendkim_user }}"
   # UMask: "007"
+  Canonicalization: relaxed/relaxed
   # Socket: local:/run/opendkim/opendkim.sock
   # PidFile: /run/opendkim/opendkim.pid
   # InternalHosts:
@@ -31,13 +35,7 @@ opedkim_cfg:
   #   - 10.0.0.0/8
   #   - 172.16.0.0/12
   # TrustAnchorFile: /usr/share/dns/root.key
-  KeyTable: refile:/etc/opendkim/KeyTable
-  SigningTable: refile:/etc/opendkim/SigningTable
   ## Nameservers: 127.0.0.1
-
-# Domain			example.com
-# Selector		2020
-# KeyFile		/etc/dkimkeys/example.private
 
 ## Select your MTA (postfix or sendmail)
 dkim_mta: postfix
@@ -47,14 +45,20 @@ dkim_postfix_config: /etc/postfix/main.cf
 ## -----------------
 ## 設定するドメイン
 ## -----------------
-opedkim_domains: []
+opendkim_domains: []
 #   - example.com
 #   - example.org
 #   - example.jp
+
 ## -----------------
 ## 接続を許可するホストの設定
 ## -----------------
-opedkim_trusted_hosts: []
-  #   - 192.168.0.0/16
-  #   - 10.0.0.0/8
-  #   - 172.16.0.0/12
+opendkim_trusted_hosts: []
+#   - 192.168.0.0/16
+#   - 10.0.0.0/8
+#   - 172.16.0.0/12
+
+## -----------------
+## 連携させるMTA
+## -----------------
+opendkim_mta: postfix

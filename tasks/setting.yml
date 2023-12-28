@@ -16,14 +16,14 @@
     mode: "0700"
 - name: Update OpenDKIM setting files
   ansible.builtin.template:
-    src: "{{ item }}.j2"
-    dest: /etc/{{ opedkim_table_config_dir }}/{{ item }}
+    src: opendkim.conf.j2
+    dest: /etc/opendkim.conf
     mode: "0644"
   notify: Restart opendkim
 - name: Create/Update OpenDKIM config table files
   ansible.builtin.template:
-    src: opendkim.conf.j2
-    dest: /etc/opendkim.conf
+    src: "{{ item }}.j2"
+    dest: "{{ opedkim_table_config_dir }}/{{ item }}"
     mode: "0644"
   loop:
     - KeyTable
@@ -35,3 +35,6 @@
   loop: "{{ opedkim_domains | default([]) }}"
   loop_control:
     loop_var: opedkim_domain
+- name: MTA alignment setting
+  ansible.builtin.include_tasks:
+    file: mta/{{ opendkim_mta }}.yml

@@ -65,15 +65,21 @@
           - ansible_facts.services['opendkim.service'] is defined
           - ansible_facts.services['opendkim.service']['state'] == 'running'
           - ansible_facts.services['opendkim.service']['status'] == 'enabled'
-    # ## 待受ポートのテスト
-    # - name: Gather facts on listening ports
-    #   community.general.listen_ports_facts:
-    #     command: ss
+    ## 待受ポートのテスト
+    - name: Gather facts on listening ports
+      community.general.listen_ports_facts:
+        command: ss
+    - name: Set assert variables
+      ansible.builtin.set_fact:
+        listen_tcp_posts: "{{ ansible_facts.tcp_listen | map(attribute='port') | unique | list }}"
+        listen_udp_posts: "{{ ansible_facts.udp_listen | map(attribute='port') | unique | list }}"
     # - name: Set assert variables
-    #   ansible.builtin.set_fact:
-    #     listen_tcp_posts: "{{ ansible_facts.tcp_listen | map(attribute='port') | unique | list }}"
-    #     listen_udp_posts: "{{ ansible_facts.udp_listen | map(attribute='port') | unique | list }}"
+    #   ansible.builtin.debug:
+    #     var: listen_tcp_posts
+    # - name: Set assert variables
+    #   ansible.builtin.debug:
+    #     var: listen_udp_posts
     # - name: Assert listen port
     #   ansible.builtin.assert:
     #     that:
-    #       - 123456 in listen_tcp_posts
+    #       - 8892 in listen_tcp_posts

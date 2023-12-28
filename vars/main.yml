@@ -4,5 +4,13 @@ opendkim_group: opendkim
 
 opedkim_config_path: /etc/opendkim.conf
 opedkim_table_config_dir: /etc/opendkim
-
 opedkim_key_dir: /etc/dkimkeys
+
+# Postfix config file
+opendkim_postfix_config_path: /etc/postfix/main.cf
+
+# sendmail config file and folder
+opendkim_sendmail_config_dir: /etc/mail
+opendkim_sendmail_config_path: "{{ opendkim_sendmail_config_dir }}/sendmail.mc"
+
+opendkim_port: 12301
