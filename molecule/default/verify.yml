@@ -37,25 +37,31 @@
       ansible.builtin.assert:
         that:
           - group_check_result is not changed
-    # # ファイルのテスト
-    # - name: Check virtualhost setting
-    #   ansible.builtin.stat:
-    #     path: /etc/nginx/sites-available/default
-    #   register: result
-    # - name: Assert file
-    #   ansible.builtin.assert:
-    #     that:
-    #       - result.stat.exists
-    # - name: Check virtualhost enabled
-    #   ansible.builtin.stat:
-    #     path: /etc/nginx/sites-enabled/default
-    #   register: result
-    # - name: Assert file
-    #   ansible.builtin.assert:
-    #     that:
-    #       - result.stat.exists
-    #       - result.stat.islnk
-    #       - result.stat.lnk_source == '/etc/nginx/sites-available/default'
+    # ファイルのテスト
+    - name: Check KeyTable setting
+      ansible.builtin.stat:
+        path: /etc/opendkim/KeyTable
+      register: result
+    - name: Assert file
+      ansible.builtin.assert:
+        that:
+          - result.stat.exists
+    - name: Check SigningTable setting
+      ansible.builtin.stat:
+        path: /etc/opendkim/SigningTable
+      register: result
+    - name: Assert file
+      ansible.builtin.assert:
+        that:
+          - result.stat.exists
+    - name: Check TrustedHosts setting
+      ansible.builtin.stat:
+        path: /etc/opendkim/TrustedHosts
+      register: result
+    - name: Assert file
+      ansible.builtin.assert:
+        that:
+          - result.stat.exists
     ## サービスのテスト
     - name: Populate service facts
       ansible.builtin.service_facts:
@@ -65,21 +71,3 @@
           - ansible_facts.services['opendkim.service'] is defined
           - ansible_facts.services['opendkim.service']['state'] == 'running'
           - ansible_facts.services['opendkim.service']['status'] == 'enabled'
-    ## 待受ポートのテスト
-    - name: Gather facts on listening ports
-      community.general.listen_ports_facts:
-        command: ss
-    - name: Set assert variables
-      ansible.builtin.set_fact:
-        listen_tcp_posts: "{{ ansible_facts.tcp_listen | map(attribute='port') | unique | list }}"
-        listen_udp_posts: "{{ ansible_facts.udp_listen | map(attribute='port') | unique | list }}"
-    # - name: Set assert variables
-    #   ansible.builtin.debug:
-    #     var: listen_tcp_posts
-    # - name: Set assert variables
-    #   ansible.builtin.debug:
-    #     var: listen_udp_posts
-    # - name: Assert listen port
-    #   ansible.builtin.assert:
-    #     that:
-    #       - 8892 in listen_tcp_posts

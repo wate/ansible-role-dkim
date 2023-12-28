@@ -8,3 +8,7 @@
   ansible.builtin.systemd:
     state: reloaded
     name: opendkim
+- name: Restart postfix
+  ansible.builtin.systemd:
+    state: restarted
+    name: postfix

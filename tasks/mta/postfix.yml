@@ -11,5 +11,4 @@
   loop: "{{ opendkim_postfix_cfg }}"
   loop_control:
     loop_var: opendkim_postfix_setting
-  # notify:
-  #   - opendkim - restart postfix
+  notify: Restart postfix

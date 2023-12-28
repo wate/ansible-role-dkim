@@ -6,8 +6,18 @@ opendkim_packages:
   - opendkim
   - opendkim-tools
 
+## -----------------
 ## DKIMセレクター
+## -----------------
 opendkim_selector: mail
+
+## -----------------
+## 設定するドメイン
+## -----------------
+opendkim_domains: []
+#   - example.com
+#   - example.org
+#   - example.jp
 
 ## -----------------
 ## opendkim-gkeygenで鍵を生成する時のキー長
@@ -40,19 +50,8 @@ opendkim_cfg:
   # TrustAnchorFile: /usr/share/dns/root.key
 
 ## -----------------
-## 設定するドメイン
-## ※この値が設定されている(ドメインが1つ以上設定されている)場合、
-## KeyTable/SigningTableの設定が設定ファイルに自動で追加されます
-## -----------------
-opendkim_domains: []
-#   - example.com
-#   - example.org
-#   - example.jp
-
-## -----------------
 ## 接続を許可するホストの設定
-## ※この値が設定されている(1つ以上設定されている)場合、
-## InternalHosts/ExternalIgnoreListの設定が設定ファイルに自動で追加されます
+## ※1つ以上設定されている場合、InternalHosts/ExternalIgnoreListの設定を設定ファイルに自動で追加します
 ## -----------------
 opendkim_trusted_hosts: []
 #   - 192.168.0.0/16

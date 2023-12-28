@@ -32,20 +32,16 @@
     path: /etc/opendkim.conf
     marker: "# {mark} opendkim_trusted_hosts ANSIBLE MANAGED BLOCK"
     content: |
-      {% if opendkim_trusted_hosts | default([]) | length > 0 %}
       ExternalIgnoreList      refile:{{ opendkim_table_config_dir }}/TrustedHosts
       InternalHosts           refile:{{ opendkim_table_config_dir }}/TrustedHosts
-      {% endif -%}
   notify: Restart opendkim
 - name: Update KeyTable/SigningTable setting
   ansible.builtin.blockinfile:
     path: /etc/opendkim.conf
     marker: "# {mark} opendkim_domains ANSIBLE MANAGED BLOCK"
     content: |
-      {% if opendkim_domains | default([]) | length > 0 -%}
       KeyTable                refile:{{ opendkim_table_config_dir }}/KeyTable
       SigningTable            refile:{{ opendkim_table_config_dir }}/SigningTable
-      {% endif %}
   notify: Restart opendkim
 - name: Create/Update OpenDKIM config table files
   ansible.builtin.template:
