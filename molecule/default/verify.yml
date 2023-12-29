@@ -71,3 +71,9 @@
           - ansible_facts.services['opendkim.service'] is defined
           - ansible_facts.services['opendkim.service']['state'] == 'running'
           - ansible_facts.services['opendkim.service']['status'] == 'enabled'
+    - name: Send test mail
+      community.general.mail:
+        from: wate <pc.poisoning@gmail.com>
+        to: wate <pc.poisoning@gmail.com>
+        subject: Ansible OpenDKIM role test mail({{ inventory_hostname }})
+        body: Hello, this is OpenDKIM test mail.
