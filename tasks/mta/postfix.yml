@@ -2,13 +2,6 @@
 - name: Install Postfix
   ansible.builtin.apt:
     name: postfix
-- name: OpenDKIM run directory
-  ansible.builtin.file:
-    path: "{{ opendkim_run_dir }}"
-    state: directory
-    owner: "{{ opendkim_user }}"
-    group: postfix
-    mode: "0755"
 - name: Configuration OpenDKIM postfix milter
   ansible.builtin.blockinfile:
     path: /etc/postfix/main.cf

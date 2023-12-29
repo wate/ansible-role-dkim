@@ -26,3 +26,10 @@
     - name: Include role
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+  post_tasks:
+    - name: Send test mail
+      community.general.mail:
+        to: wate <pc.poisoning@gmail.com>
+        from: role test <test@eample.com>
+        subject: Ansible OpenDKIM role test mail({{ inventory_hostname }})
+        body: Hello, this is OpenDKIM test mail.

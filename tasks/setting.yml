@@ -17,8 +17,8 @@
 - name: Set OpenDKIM socket configured
   ansible.builtin.lineinfile:
     path: /etc/default/opendkim
-    regexp: ^RUNDIR=
-    line: RUNDIR="{{ opendkim_run_dir }}"
+    regexp: ^SOCKET=
+    line: SOCKET={{ opendkim_socket }}
   notify: Restart opendkim
 - name: Update OpenDKIM settings
   ansible.builtin.lineinfile:

@@ -7,6 +7,11 @@ opendkim_packages:
   - opendkim-tools
 
 ## -----------------
+## OpenDKIMのポート番号
+## -----------------
+opendkim_port: 8891
+
+## -----------------
 ## DKIMセレクター
 ## -----------------
 opendkim_selector: default
@@ -30,15 +35,16 @@ opendkim_rsa_keylen: 2048
 opendkim_mta: postfix
 
 ## -----------------
-## OpenDKIMの動作ディレクトリ
+## OpenDKIMのSocket項目の設定値
 ## -----------------
-opendkim_run_dir: /var/spool/postfix/opendkim
+opendkim_socket: inet:{{ opendkim_port }}@localhost
 
 ## -----------------
 ## OpenDKIMの設定
 ## -----------------
 opendkim_cfg:
   AutoRestart: "yes"
+  AutoRestartRate: 10/1h
   # Syslog: "yes"
   # SyslogSuccess: "yes"
   LogWhy: "yes"
@@ -48,21 +54,20 @@ opendkim_cfg:
   # OversignHeaders: From
   # UserID: "{{ opendkim_user }}"
   # UMask: "007"
-  Socket: "{{ opendkim_run_dir }}/opendkim.sock"
+  Socket: "{{ opendkim_socket }}"
   # PidFile: /run/opendkim/opendkim.pid
   # TrustAnchorFile: /usr/share/dns/root.key
 
 ## -----------------
 ## 接続を許可するホストの設定
-## ※1つ以上設定されている場合はInternalHosts/ExternalIgnoreListの設定を設定ファイルに自動で追加します
 ## -----------------
 opendkim_trusted_hosts:
   - 127.0.0.1
   - ::1
-  - locahost
-  # - 192.168.0.0/16
-  # - 10.0.0.0/8
-  # - 172.16.0.0/12
+  - localhost
+  - 192.168.0.0/16
+  - 172.16.0.0/12
+  - 10.0.0.0/8
 
 ## -----------------
 ## Postfixの連携設定
@@ -73,6 +78,6 @@ opendkim_postfix_cfg:
   - key: milter_default_action
     value: accept
   - key: smtpd_milters
-    value: inet:opendkim/opendkim.sock
+    value: inet:localhost:{{ opendkim_port }}
   - key: non_smtpd_milters
-    value: inet:opendkim/opendkim.sock
+    value: inet:localhost:{{ opendkim_port }}
