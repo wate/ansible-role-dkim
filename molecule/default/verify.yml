@@ -6,68 +6,104 @@
   # check_mode: true
   become: true
   tasks:
-    ## パッケージのテスト
-    - name: Gather the package facts
+    ## テストの前処理
+    - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+    - name: Gather facts on listening ports
+      community.general.listen_ports_facts:
+        command: ss
+    - name: Set assert variables
+      ansible.builtin.set_fact:
+        listen_tcp_posts: "{{ ansible_facts.tcp_listen | map(attribute='port') | unique | sort | list }}"
+        listen_udp_posts: "{{ ansible_facts.udp_listen | map(attribute='port') | unique | sort | list }}"
+    ## パッケージのテスト
     - name: Assert package
       ansible.builtin.assert:
         that:
           - ansible_facts.packages['opendkim'] is defined
           - ansible_facts.packages['opendkim-tools'] is defined
     ## ユーザーのテスト
-    - name: Check user
-      ansible.builtin.user:
-        name: opendkim
-        system: true
-      register: user_check_result
-      check_mode: true
-    - name: Assert user
-      ansible.builtin.assert:
-        that:
-          - user_check_result is not changed
+    - name: Test user
+      block:
+        - name: Check user
+          ansible.builtin.user:
+            name: opendkim
+            system: true
+          register: user_check_result
+          check_mode: true
+        - name: Assert user
+          ansible.builtin.assert:
+            that:
+              - user_check_result is not changed
     ## グループのテスト
-    - name: Check group
-      ansible.builtin.group:
-        name: www-data
-        system: true
-      check_mode: true
-      register: group_check_result
-    - name: Assert group
-      ansible.builtin.assert:
-        that:
-          - group_check_result is not changed
+    - name: Test group
+      block:
+        - name: Check group
+          ansible.builtin.group:
+            name: www-data
+            system: true
+          check_mode: true
+          register: group_check_result
+        - name: Assert group
+          ansible.builtin.assert:
+            that:
+              - group_check_result is not changed
     # ファイルのテスト
-    - name: Check KeyTable setting
-      ansible.builtin.stat:
-        path: /etc/opendkim/KeyTable
-      register: result
-    - name: Assert file
-      ansible.builtin.assert:
-        that:
-          - result.stat.exists
-    - name: Check SigningTable setting
-      ansible.builtin.stat:
-        path: /etc/opendkim/SigningTable
-      register: result
-    - name: Assert file
-      ansible.builtin.assert:
-        that:
-          - result.stat.exists
-    - name: Check TrustedHosts setting
-      ansible.builtin.stat:
-        path: /etc/opendkim/TrustedHosts
-      register: result
-    - name: Assert file
-      ansible.builtin.assert:
-        that:
-          - result.stat.exists
+    - name: Test files
+      block:
+        - name: Check KeyTable setting
+          ansible.builtin.stat:
+            path: /etc/opendkim/KeyTable
+          register: result
+        - name: Assert file
+          ansible.builtin.assert:
+            that:
+              - result.stat.exists
+        - name: Check SigningTable setting
+          ansible.builtin.stat:
+            path: /etc/opendkim/SigningTable
+          register: result
+        - name: Assert file
+          ansible.builtin.assert:
+            that:
+              - result.stat.exists
+        - name: Check TrustedHosts setting
+          ansible.builtin.stat:
+            path: /etc/opendkim/TrustedHosts
+          register: result
+        - name: Assert file
+          ansible.builtin.assert:
+            that:
+              - result.stat.exists
     ## サービスのテスト
-    - name: Populate service facts
-      ansible.builtin.service_facts:
     - name: Assert service
       ansible.builtin.assert:
         that:
           - ansible_facts.services['opendkim.service'] is defined
           - ansible_facts.services['opendkim.service']['state'] == 'running'
           - ansible_facts.services['opendkim.service']['status'] == 'enabled'
+    ## サービスのテスト
+    - name: Assert service
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['opendkim.service'] is defined
+          - ansible_facts.services['opendkim.service']['state'] == 'running'
+          - ansible_facts.services['opendkim.service']['status'] == 'enabled'
+    ## ポートのテスト
+    - name: Assert port
+      ansible.builtin.assert:
+        that:
+          - 8891 in listen_tcp_posts
+    ## OpenDKIMとPostfixの連携確認
+    - name: Find log
+      ansible.builtin.shell:
+        cmd: grep -P "OpenDKIM Filter v\d{1,}\.\d{1,2}.\d{1,} starting" /var/log/mail.log
+      changed_when: grep_result.rc > 1
+      register: grep_result
+    - name: Assert Log
+      ansible.builtin.assert:
+        that:
+          - grep_result.stdout_lines | length > 0

@@ -1,7 +1,4 @@
 ---
-- name: Debug
-  ansible.builtin.debug:
-    var: opendkim_domain
 - name: Creates domain's keys directory
   ansible.builtin.file:
     path: "{{ opendkim_key_dir }}/{{ opendkim_domain }}"

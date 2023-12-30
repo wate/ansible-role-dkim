@@ -20,6 +20,10 @@ Role Variables
 
 インストールするパッケージ
 
+### `opendkim_port`
+
+OpenDKIMのポート番号
+
 ### `opendkim_selector`
 
 DKIMセレクター
@@ -36,9 +40,9 @@ opendkim-gkeygenで鍵を生成する時のキー長
 
 連携させるMTA
 
-### `opendkim_run_dir`
+### `opendkim_socket`
 
-OpenDKIMの動作ディレクトリ
+OpenDKIMのSocket項目の設定値
 
 ### `opendkim_cfg`
 
@@ -46,8 +50,7 @@ OpenDKIMの設定
 
 ### `opendkim_trusted_hosts`
 
-接続を許可するホストの設定  
-※1つ以上設定されている場合はInternalHosts/ExternalIgnoreListの設定を設定ファイルに自動で追加します
+接続を許可するホストの設定
 
 ### `opendkim_postfix_cfg`
 

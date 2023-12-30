@@ -1,4 +1,19 @@
 ---
+opendkim_cfg:
+  # AutoRestart: "yes"
+  # AutoRestartRate: 10/1h
+  # Syslog: "yes"
+  # SyslogSuccess: "yes"
+  LogWhy: "yes"
+  ## Canonicalization: relaxed/relaxed
+  # Mode: sv
+  ## SubDomains: "no"
+  # OversignHeaders: From
+  # UserID: "{{ opendkim_user }}"
+  # UMask: "007"
+  Socket: "{{ opendkim_socket }}"
+  # PidFile: /run/opendkim/opendkim.pid
+  # TrustAnchorFile: /usr/share/dns/root.key
 
 opendkim_domains:
   - example.com
@@ -6,6 +21,12 @@ opendkim_domains:
   - example.jp
 
 opendkim_trusted_hosts:
+  - 127.0.0.1
+  - ::1
+  - localhost
   - 192.168.0.0/16
   - 10.0.0.0/8
   - 172.16.0.0/12
+
+install_tools:
+  - mailpit
