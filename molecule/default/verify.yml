@@ -85,13 +85,6 @@
           - ansible_facts.services['opendkim.service'] is defined
           - ansible_facts.services['opendkim.service']['state'] == 'running'
           - ansible_facts.services['opendkim.service']['status'] == 'enabled'
-    ## サービスのテスト
-    - name: Assert service
-      ansible.builtin.assert:
-        that:
-          - ansible_facts.services['opendkim.service'] is defined
-          - ansible_facts.services['opendkim.service']['state'] == 'running'
-          - ansible_facts.services['opendkim.service']['status'] == 'enabled'
     ## ポートのテスト
     - name: Assert port
       ansible.builtin.assert:
@@ -107,3 +100,22 @@
       ansible.builtin.assert:
         that:
           - grep_result.stdout_lines | length > 0
+    # - name: Delete all mail queue
+    #   ansible.builtin.command:
+    #     cmd: postsuper -d ALL
+    # - name: Sending test mail
+    #   community.general.mail:
+    #     to: wate <pc.poisoning@gmail.com>
+    #     subject: Ansible OpenDKIM role test
+    #     body: molecule verify OpenDKIM role test
+    # - name: Get mail queue list
+    #   ansible.builtin.command:
+    #     cmd: postqueue -p
+    #   register: postqueue_result
+    # - name: Get mail queue
+    #   ansible.builtin.command:
+    #     cmd: postcat -q {{ postqueue_result.stdout_lines[1] | regex_search('^[0-9A-Z]+') }}
+    #   register: postcat_result
+    # - name: Debug
+    #   ansible.builtin.debug:
+    #     var: postcat_result
