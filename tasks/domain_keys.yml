@@ -14,7 +14,7 @@
   ansible.builtin.command:
     cmd: >
       opendkim-genkey
-      -b {{ opendkim_rsa_keylen }}
+      -b {{ opendkim_rsa_keylen | default(1024) }}
       -d {{ opendkim_domain }}
       -s {{ opendkim_selector }}
       -D {{ opendkim_key_dir }}/{{ opendkim_domain }}

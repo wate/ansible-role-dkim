@@ -27,7 +27,7 @@ opendkim_domains: []
 ## -----------------
 ## opendkim-gkeygenで鍵を生成する時のキー長
 ## -----------------
-opendkim_rsa_keylen: 2048
+opendkim_rsa_keylen: 1024
 
 ## -----------------
 ## 連携させるMTA
