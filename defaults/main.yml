@@ -1,22 +1,5 @@
 ---
 ## -----------------
-## インストールするパッケージ
-## -----------------
-opendkim_packages:
-  - opendkim
-  - opendkim-tools
-
-## -----------------
-## OpenDKIMのポート番号
-## -----------------
-opendkim_port: 8891
-
-## -----------------
-## DKIMセレクター
-## -----------------
-opendkim_selector: default
-
-## -----------------
 ## 設定するドメイン
 ## -----------------
 opendkim_domains: []
@@ -25,9 +8,26 @@ opendkim_domains: []
 #   - example.jp
 
 ## -----------------
+## DKIMセレクター
+## -----------------
+opendkim_selector: default
+
+## -----------------
+## インストールするパッケージ
+## -----------------
+opendkim_packages:
+  - opendkim
+  - opendkim-tools
+
+## -----------------
 ## opendkim-gkeygenで鍵を生成する時のキー長
 ## -----------------
 opendkim_rsa_keylen: 1024
+
+## -----------------
+## OpenDKIMのポート番号
+## -----------------
+opendkim_port: 8891
 
 ## -----------------
 ## 連携させるMTA
