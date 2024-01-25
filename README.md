@@ -16,25 +16,25 @@ Role Variables
 
 設定方法の詳細については[defaults/main.yml](defaults/main.yml)のサンプルコードを参照してください。
 
-### `opendkim_packages`
+### `opendkim_domains`
 
-インストールするパッケージ
-
-### `opendkim_port`
-
-OpenDKIMのポート番号
+設定するドメイン
 
 ### `opendkim_selector`
 
 DKIMセレクター
 
-### `opendkim_domains`
+### `opendkim_packages`
 
-設定するドメイン
+インストールするパッケージ
 
 ### `opendkim_rsa_keylen`
 
 opendkim-gkeygenで鍵を生成する時のキー長
+
+### `opendkim_port`
+
+OpenDKIMのポート番号
 
 ### `opendkim_mta`
 
