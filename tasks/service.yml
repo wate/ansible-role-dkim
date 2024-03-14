@@ -1,12 +1,12 @@
 # code: language=ansible
 ---
 - name: Service OpenDKIM is active and enabled on system startup
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: opendkim
     state: started
     enabled: true
 - name: Service MTA is active and enabled on system startup
-  ansible.builtin.systemd:
+  ansible.builtin.systemd_service:
     name: "{{ opendkim_mta }}"
     state: started
     enabled: true
