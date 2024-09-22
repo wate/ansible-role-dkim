@@ -14,47 +14,61 @@ OS Platform
 Role Variables
 --------------
 
-設定方法の詳細については[defaults/main.yml](defaults/main.yml)のサンプルコードを参照してください。
+### [defaults/main.yml](defaults/main.yml)
 
-### `opendkim_domains`
+設定方法の詳細については[defaults/main.yml](defaults/main.yml)のサンプルコードなどを参照してください。
+
+#### `opendkim_domains`
 
 設定するドメイン
 
-### `opendkim_selector`
+#### `opendkim_selector`
 
 DKIMセレクター
 
-### `opendkim_packages`
+#### `opendkim_packages`
 
 インストールするパッケージ
 
-### `opendkim_rsa_keylen`
+#### `opendkim_rsa_keylen`
 
 opendkim-gkeygenで鍵を生成する時のキー長
 
-### `opendkim_port`
+#### `opendkim_port`
 
 OpenDKIMのポート番号
 
-### `opendkim_mta`
+#### `opendkim_mta`
 
 連携させるMTA
 
-### `opendkim_socket`
+#### `opendkim_socket`
 
 OpenDKIMのSocket項目の設定値
 
-### `opendkim_cfg`
+#### `opendkim_cfg`
 
 OpenDKIMの設定
 
-### `opendkim_trusted_hosts`
+#### `opendkim_trusted_hosts`
 
 接続を許可するホストの設定
 
-### `opendkim_postfix_cfg`
+#### `opendkim_postfix_cfg`
 
 Postfixの連携設定
+
+### [vars/main.yml](vars/main.yml)
+
+設定値については[vars/main.yml](vars/main.yml)を参照してください。
+
+#### `opendkim_user`
+
+#### `opendkim_group`
+
+#### `opendkim_table_config_dir`
+
+#### `opendkim_key_dir`
 
 Example Playbook
 --------------
