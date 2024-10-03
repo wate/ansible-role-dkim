@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
-{% for trustedhost in opendkim_trusted_hosts %}
+{% for trustedhost in opendkim_trusted_hosts | unique %}
 {{ trustedhost }}
 {% endfor %}
