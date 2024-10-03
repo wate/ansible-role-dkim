@@ -55,7 +55,7 @@
 - name: Generate OpenDKIM keys
   ansible.builtin.include_tasks:
     file: domain_keys.yml
-  loop: "{{ opendkim_domains | default([]) }}"
+  loop: "{{ opendkim_domains | default([]) | unique }}"
   loop_control:
     loop_var: opendkim_domain
 - name: MTA alignment setting
